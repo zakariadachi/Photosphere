@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Services;
-
-// On charge les fichiers des classes dont on a besoin
 require_once __DIR__ . '/../Entities/User.php';
 require_once __DIR__ . '/../Entities/BasicUser.php';
 require_once __DIR__ . '/../Entities/ProUser.php';
@@ -15,26 +13,17 @@ use App\Entities\ProUser;
 use App\Entities\Moderator;
 use App\Entities\Administrator;
 
-/**
- * UserFactory
- * C'est une "usine" à utilisateurs. On lui donne un tableau de données,
- * et elle nous fabrique le bon objet (Admin, Pro, ou Basic).
- */
 class UserFactory
 {
-    // Fonction statique pour créer l'objet
+    //créer l'objet
     public static function create($data)
     {
-        // On prépare les variables. Si ça n'existe pas dans le tableau $data, on met une valeur par défaut.
-        
-        // ID
         if (isset($data['id'])) {
             $id = $data['id'];
         } else {
             $id = 0;
         }
 
-        // Nom d'utilisateur (on gère les deux noms de colonne possibles pour être sûr)
         if (isset($data['user_name'])) {
             $userName = $data['user_name'];
         } elseif (isset($data['username'])) {
@@ -43,55 +32,89 @@ class UserFactory
             $userName = '';
         }
 
-        // Email et Password
         $email = isset($data['email']) ? $data['email'] : '';
         $password = isset($data['password']) ? $data['password'] : '';
 
-        // Le Rôle (très important pour savoir quelle classe créer)
         if (isset($data['role'])) {
             $role = $data['role'];
         } elseif (isset($data['level'])) {
             $role = $data['level'];
         } else {
-            $role = 'basicuser'; // Par défaut
+            $role = 'basicuser';
         }
 
-        // Autres champs...
-        $createdAt = isset($data['created_at']) ? $data['created_at'] : date('Y-m-d H:i:s');
-        $bio = isset($data['bio']) ? $data['bio'] : null;
-        $adresse = isset($data['adresse']) ? $data['adresse'] : null;
-        $lastLogin = isset($data['last_login']) ? $data['last_login'] : null;
-        
-        // Est-ce un super admin ?
-        if (isset($data['isSuperAdmin'])) {
-            $isSuperAdmin = (bool)$data['isSuperAdmin'];
+        // Gestion des valeurs
+        if (isset($data['created_at'])) {
+            $createdAt = $data['created_at'];
         } else {
-            $isSuperAdmin = false;
+            $createdAt = date('Y-m-d H:i:s');
         }
 
-        $moderatorLevel = isset($data['moderator_level']) ? $data['moderator_level'] : null;
-        $dateDebut = isset($data['date_debut_abonnement']) ? $data['date_debut_abonnement'] : null;
-        $dateFin = isset($data['date_fin_abonnement']) ? $data['date_fin_abonnement'] : null;
-        $uploadCount = isset($data['uploadCount']) ? $data['uploadCount'] : 0;
+        if (isset($data['bio'])) {
+            $bio = $data['bio'];
+        } else {
+            $bio = null;
+        }
 
-        // Maintenant on regarde le rôle pour créer le bon objet
+        if (isset($data['adresse'])) {
+            $adresse = $data['adresse'];
+        } else {
+            $adresse = null;
+        }
+
+        if (isset($data['last_login'])) {
+            $lastLogin = $data['last_login'];
+        } else {
+            $lastLogin = null;
+        }
+
+        if (isset($data['moderator_level'])) {
+            $moderatorLevel = $data['moderator_level'];
+        } else {
+            $moderatorLevel = null;
+        }
+
+        if (isset($data['date_debut_abonnement'])) {
+            $dateDebut = $data['date_debut_abonnement'];
+        } else {
+            $dateDebut = null;
+        }
+
+        if (isset($data['date_fin_abonnement'])) {
+            $dateFin = $data['date_fin_abonnement'];
+        } else {
+            $dateFin = null;
+        }
+
+        if (isset($data['uploadCount'])) {
+            $uploadCount = $data['uploadCount'];
+        } else {
+            $uploadCount = 0;
+        }
+
+        if (isset($data['isSuperAdmin'])) {
+            $isSuperAdmin = $data['isSuperAdmin'];
+        } else {
+            $isSuperAdmin = null;
+        }
+        if (isset($data['status'])) {
+            $status = $data['status'];
+        } else {
+            $status = 'active';
+        }
         
         if ($role == 'admin' || $role == 'Administrator') {
-            // C'est un admin !
-            return new Administrator($id, $userName, $email, $password, $role, $createdAt, $bio, $adresse, $lastLogin, $isSuperAdmin, $moderatorLevel, $dateDebut, $dateFin, $uploadCount);
+            return new Administrator($id, $userName, $email, $password, $role, $createdAt, $bio, $adresse, $lastLogin, $isSuperAdmin, $moderatorLevel, $dateDebut, $dateFin, $uploadCount, $status);
         }
         
         if ($role == 'moderator' || $role == 'Moderator') {
-            // C'est un modérateur
-            return new Moderator($id, $userName, $email, $password, $role, $createdAt, $bio, $adresse, $lastLogin, $isSuperAdmin, $moderatorLevel, $dateDebut, $dateFin, $uploadCount);
+            return new Moderator($id, $userName, $email, $password, $role, $createdAt, $bio, $adresse, $lastLogin, $isSuperAdmin, $moderatorLevel, $dateDebut, $dateFin, $uploadCount, $status);
         }
         
         if ($role == 'prouser' || $role == 'ProUser') {
-            // C'est un pro
-            return new ProUser($id, $userName, $email, $password, $role, $createdAt, $bio, $adresse, $lastLogin, $isSuperAdmin, $moderatorLevel, $dateDebut, $dateFin, $uploadCount);
+            return new ProUser($id, $userName, $email, $password, $role, $createdAt, $bio, $adresse, $lastLogin, $isSuperAdmin, $moderatorLevel, $dateDebut, $dateFin, $uploadCount, $status);
         }
 
-        // Si on est ici, c'est un utilisateur basique par défaut
-        return new BasicUser($id, $userName, $email, $password, $role, $createdAt, $bio, $adresse, $lastLogin, $isSuperAdmin, $moderatorLevel, $dateDebut, $dateFin, $uploadCount);
+        return new BasicUser($id, $userName, $email, $password, $role, $createdAt, $bio, $adresse, $lastLogin, $isSuperAdmin, $moderatorLevel, $dateDebut, $dateFin, $uploadCount, $status);
     }
 }

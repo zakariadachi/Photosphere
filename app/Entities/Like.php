@@ -1,21 +1,32 @@
 <?php
+
 namespace App\Entities;
 
-/**
- * Classe Like
- * Quand quelqu'un aime un post.
- */
 class Like {
     private int $userId;
     private int $postId;
-    private string $createdAt;
-
-    public function __construct($userId, $postId, $createdAt) {
+    private ?string $createdAt;
+    
+    public function __construct(
+        int $userId,
+        int $postId,
+        ?string $createdAt = null
+    ) {
         $this->userId = $userId;
         $this->postId = $postId;
         $this->createdAt = $createdAt;
     }
-
-    public function getUserId() { return $this->userId; }
-    public function getPostId() { return $this->postId; }
+    
+    // Getters
+    public function getUserId(): int { return $this->userId; }
+    public function getPostId(): int { return $this->postId; }
+    public function getCreatedAt(): ?string { return $this->createdAt; }
+    
+    public function toArray(): array {
+        return [
+            'userId' => $this->userId,
+            'postId' => $this->postId,
+            'createdAt' => $this->createdAt
+        ];
+    }
 }

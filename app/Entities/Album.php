@@ -1,10 +1,6 @@
 <?php
 namespace App\Entities;
 
-/**
- * Classe Album
- * Représente un album photo.
- */
 class Album {
     private int $id;
     private string $name;
@@ -12,7 +8,7 @@ class Album {
     private ?string $description;
     private int $photoCount;
     private ?string $updatedAt;
-    private int $userId; // ID du créateur
+    private int $userId;
 
     // Constructeur
     public function __construct($id, $name, $isPublic, $description, $photoCount, $updatedAt, $userId) {

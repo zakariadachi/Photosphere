@@ -1,10 +1,4 @@
 <?php
-
-/**
- * Test de la hiérarchie d'héritage des classes User
- * Mise à jour "Basic Code" compatible
- */
-
 require_once __DIR__ . '/../app/Services/UserFactory.php';
 
 use App\Services\UserFactory;
@@ -13,8 +7,7 @@ use App\Entities\User;
 echo "=== Test de la hiérarchie d'héritage ===\n\n";
 
 // Test 1: BasicUser
-echo "Test 1: Création d'un BasicUser\n";
-// On utilise la Factory pour faire simple et éviter les 15 arguments
+echo "Création d'un BasicUser\n";
 $basicUser = UserFactory::create([
     'id' => 1,
     'user_name' => 'john_doe',
@@ -29,7 +22,7 @@ echo "   - Username: " . $basicUser->getUserName() . "\n";
 echo "   - Role: " . $basicUser->getRole() . "\n\n";
 
 // Test 2: ProUser
-echo "Test 2: Création d'un ProUser\n";
+echo "Création d'un ProUser\n";
 $proUser = UserFactory::create([
     'id' => 2,
     'user_name' => 'jane_pro',
@@ -38,22 +31,33 @@ $proUser = UserFactory::create([
 ]);
 
 echo "✅ ProUser créé avec succès\n";
-echo "   - Role: " . $proUser->getRole() . "\n";
-echo "   - Abonnement actif: " . ($proUser->hasActiveSubscription() ? 'Oui' : 'Non') . "\n\n";
+echo "   - Role : " . $proUser->getRole() . "\n";
+
+if ($proUser->hasActiveSubscription()) {
+    echo "   - Abonnement actif : Oui\n\n";
+} else {
+    echo "   - Abonnement actif : Non\n\n";
+}
+
 
 // Test 3: Moderator
-echo "Test 3: Création d'un Moderator\n";
+echo "Création d'un Moderator\n";
 $moderator = UserFactory::create([
     'id' => 3,
     'user_name' => 'mod_alice',
     'role' => 'moderator'
 ]);
 echo "✅ Moderator créé avec succès\n";
-echo "   - Role: " . $moderator->getRole() . "\n";
-echo "   - Peut modérer: " . ($moderator->canModerate() ? 'Oui' : 'Non') . "\n\n";
+echo "   - Role : " . $moderator->getRole() . "\n";
+
+if ($moderator->canModerate()) {
+    echo "   - Peut modérer : Oui\n\n";
+} else {
+    echo "   - Peut modérer : Non\n\n";
+}
 
 // Test 4: Administrator
-echo "Test 4: Création d'un Administrator\n";
+echo "Création d'un Administrator\n";
 $admin = UserFactory::create([
     'id' => 4,
     'user_name' => 'admin_bob',
@@ -61,13 +65,24 @@ $admin = UserFactory::create([
     'isSuperAdmin' => true
 ]);
 echo "✅ Administrator créé avec succès\n";
-echo "   - Role: " . $admin->getRole() . "\n";
-echo "   - Super Admin: " . ($admin->isSuperAdmin() ? 'Oui' : 'Non') . "\n\n";
+echo "   - Role : " . $admin->getRole() . "\n";
 
-// Test 5: Vérification de l'héritage
-echo "Test 5: Vérification de l'héritage\n";
-// Comme on n'a plus de namespace stricte "use App\Entities\User", on vérifie juste le parent
+if ($admin->isSuperAdmin()) {
+    echo "   - Super Admin : Oui\n\n";
+} else {
+    echo "   - Super Admin : Non\n\n";
+}
+
+echo "Vérification de l'héritage\n";
 $parentClass = get_parent_class($basicUser);
-echo "   - Parent de BasicUser est User: " . ($parentClass === 'App\Entities\User' ? '✅ Oui' : '❌ Non (' . $parentClass . ')') . "\n\n";
+echo "Vérification de l'héritage\n";
 
-echo "=== Tous les tests réussis! ===\n";
+$parentClass = get_parent_class($basicUser);
+
+if ($parentClass === 'App\Entities\User') {
+    echo "   - Le parent de BasicUser est bien User : ✅ Oui\n\n";
+} else {
+    echo "   - Le parent de BasicUser est bien User : ❌ Non (C'est " . $parentClass . ")\n\n";
+}
+
+echo "=== Tous les tests réussis ! ===\n";

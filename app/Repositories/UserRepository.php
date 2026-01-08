@@ -66,8 +66,8 @@ class UserRepository implements RepositoryInterface
     // creer nouveau
     private function create($user)
     {
-        $sql = "INSERT INTO user (user_name, email, password, role, created_at, bio, adresse, last_login, isSuperAdmin, moderator_level, date_debut_abonnement, date_fin_abonnement, uploadCount) 
-                VALUES (:name, :email, :pass, :role, :created, :bio, :adresse, :last, :super, :mod, :sub_start, :sub_end, :uploads)";
+        $sql = "INSERT INTO user (user_name, email, password, role, created_at, bio, adresse, last_login, isSuperAdmin, moderator_level, date_debut_abonnement, date_fin_abonnement, uploadCount, status) 
+                VALUES (:name, :email, :pass, :role, :created, :bio, :adresse, :last, :super, :mod, :sub_start, :sub_end, :uploads, :status)";
         
         $stmt = $this->pdo->prepare($sql);
         
@@ -81,7 +81,7 @@ class UserRepository implements RepositoryInterface
         $stmt->bindValue(':last', $user->getLastLogin());
         
         // gestion simple boolean
-        if ($user->getIsSuperAdmin()) {
+        if ($user->isSuperAdmin()) {
             $stmt->bindValue(':super', 1);
         } else {
             $stmt->bindValue(':super', 0);
@@ -91,6 +91,7 @@ class UserRepository implements RepositoryInterface
         $stmt->bindValue(':sub_start', $user->getDateDebutAbonnement());
         $stmt->bindValue(':sub_end', $user->getDateFinAbonnement());
         $stmt->bindValue(':uploads', $user->getUploadCount());
+        $stmt->bindValue(':status', $user->getStatus());
 
         $stmt->execute();
         
@@ -106,7 +107,8 @@ class UserRepository implements RepositoryInterface
                 role = :role, 
                 bio = :bio,
                 adresse = :adresse,
-                uploadCount = :uploads
+                uploadCount = :uploads,
+                status = :status 
                 WHERE id = :id";
         
         $stmt = $this->pdo->prepare($sql);
@@ -117,6 +119,7 @@ class UserRepository implements RepositoryInterface
         $stmt->bindValue(':bio', $user->getBio());
         $stmt->bindValue(':adresse', $user->getAdresse());
         $stmt->bindValue(':uploads', $user->getUploadCount());
+        $stmt->bindValue(':status', $user->getStatus());
         $stmt->bindValue(':id', $user->getId());
 
         return $stmt->execute();
@@ -136,5 +139,13 @@ class UserRepository implements RepositoryInterface
     private function hydrate($data)
     {
         return UserFactory::create($data);
+    }
+    // archiver user
+    public function archive(int $id): bool
+    {
+        $sql = "UPDATE user SET status = 'archived' WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 }

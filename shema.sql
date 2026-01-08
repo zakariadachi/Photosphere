@@ -1,4 +1,3 @@
-DROP DATABASE photosphere;
 CREATE DATABASE photosphere;
 USE photosphere;
 
@@ -6,7 +5,7 @@ CREATE TABLE user (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_name VARCHAR(30) UNIQUE NOT NULL,
     email VARCHAR(30) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL, -- Augmenté à 255 pour le hash bcrypt
+    password VARCHAR(255) NOT NULL,
     bio TEXT,
     adresse VARCHAR(30),
     role ENUM("admin", "moderator", "basicuser", "prouser"),
@@ -53,7 +52,7 @@ CREATE TABLE comments (
     content TEXT NOT NULL,
     isArchive BOOLEAN DEFAULT FALSE,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT NULL,
     userId INT NOT NULL,
     postId INT NOT NULL,
     FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE,
@@ -122,3 +121,7 @@ INSERT INTO comments (content, userId, postId) VALUES
 
 -- Likes
 INSERT INTO likes (userId, postId) VALUES (2, 1), (3, 1), (1, 3);
+
+
+
+SELECT * FROM album;

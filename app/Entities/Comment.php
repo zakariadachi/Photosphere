@@ -1,37 +1,56 @@
 <?php
+
 namespace App\Entities;
 
-/**
- * Classe Comment
- * Un commentaire sur un post.
- */
 class Comment {
-    // En mode débutant, on peut être plus souple sur les types ou utiliser ?
     private int $id;
     private string $content;
     private bool $isArchive;
-    private string $createdAt;
-    private ?string $updatedAt; // Le ? permet d'accepter null
+    private ?string $createdAt;
+    private ?string $updatedAt;
     private int $userId;
     private int $postId;
-
-    // Constructeur simple
-    public function __construct($id, $content, $isArchive, $createdAt, $updatedAt, $userId, $postId) {
+    
+    public function __construct(
+        int $id,
+        string $content,
+        int $userId,
+        int $postId,
+        bool $isArchive = false,
+        ?string $createdAt = null,
+        ?string $updatedAt = null
+    ) {
         $this->id = $id;
         $this->content = $content;
-        $this->isArchive = $isArchive;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt; // Peut être null
         $this->userId = $userId;
         $this->postId = $postId;
+        $this->isArchive = $isArchive;
+        $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
     }
-
+    
     // Getters
-    public function getId() { return $this->id; }
-    public function getContent() { return $this->content; }
-    public function isArchive() { return $this->isArchive; }
-    public function getCreatedAt() { return $this->createdAt; } 
-    public function getUpdatedAt() { return $this->updatedAt; }
-    public function getUserId() { return $this->userId; }
-    public function getPostId() { return $this->postId; }
+    public function getId(): int { return $this->id; }
+    public function getContent(): string { return $this->content; }
+    public function isArchived(): bool { return $this->isArchive; }
+    public function getCreatedAt(): ?string { return $this->createdAt; }
+    public function getUpdatedAt(): ?string { return $this->updatedAt; }
+    public function getUserId(): int { return $this->userId; }
+    public function getPostId(): int { return $this->postId; }
+    
+    // Setters
+    public function setContent(string $content): void { $this->content = $content; }
+    public function archive(): void { $this->isArchive = true; }
+    
+    public function toArray(): array {
+        return [
+            'id' => $this->id,
+            'content' => $this->content,
+            'isArchive' => $this->isArchive,
+            'createdAt' => $this->createdAt,
+            'updatedAt' => $this->updatedAt,
+            'userId' => $this->userId,
+            'postId' => $this->postId
+        ];
+    }
 }
