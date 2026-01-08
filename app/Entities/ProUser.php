@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entities;
 
 class ProUser extends User
 {
+
     public function getRole(): string
     {
-        return 'ProUser';
+        return 'proUser';
     }
 
     public function hasActiveSubscription(): bool

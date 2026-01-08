@@ -24,47 +24,47 @@ class TagRepository
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
         if ($stmt->execute()) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $row ? new Tag($row['id'], $row['name']) : null;
+            return $row ? new Tag((int)$row['id'], $row['name'], $row['slug'], (int)$row['photoCount']) : null;
         }
         return null;
     }
 
     public function findByName(string $name): ?Tag {
-        $sql = "SELECT * FROM tags WHERE name = :name";
+        $sql = "SELECT * FROM tags WHERE name = :name OR slug = :slug";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(":name", $name);
+        $stmt->bindValue(":slug", Tag::normalizeSlug($name));
         if ($stmt->execute()) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $row ? new Tag($row['id'], $row['name']) : null;
+            return $row ? new Tag((int)$row['id'], $row['name'], $row['slug'], (int)$row['photoCount']) : null;
         }
         return null;
     }
 
     public function getPopularTags(int $limit = 10): array {
-        $sql = "SELECT t.name, COUNT(pt.post_id) as tag_count 
-                FROM tags t 
-                JOIN post_tag pt ON t.id = pt.tag_id 
-                GROUP BY t.id 
-                ORDER BY tag_count DESC 
-                LIMIT :limit";
+        $sql = "SELECT * FROM tags ORDER BY photoCount DESC LIMIT :limit";
         
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(":limit", $limit, PDO::PARAM_INT);
         $stmt->execute();
         
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $tags = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $tags[] = new Tag((int)$row['id'], $row['name'], $row['slug'], (int)$row['photoCount']);
+        }
+        return $tags;
     }
 
     public function searchTags(string $query, int $limit = 20): array {
-        $sql = "SELECT * FROM tags WHERE name LIKE :query ORDER BY name ASC LIMIT :limit";
+        $sql = "SELECT * FROM tags WHERE name LIKE :query OR slug LIKE :query ORDER BY photoCount DESC LIMIT :limit";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':query', $query . '%');
+        $stmt->bindValue(':query', '%' . $query . '%');
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         
         $tags = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $tags[] = new Tag($row['id'], $row['name']);
+            $tags[] = new Tag((int)$row['id'], $row['name'], $row['slug'], (int)$row['photoCount']);
         }
         return $tags;
     }
@@ -105,7 +105,7 @@ class TagRepository
         }
         
         return [
-            'tag' => new Tag((int)$data['id'], $data['name']),
+            'tag' => new Tag((int)$data['id'], $data['name'], $data['slug'], (int)$data['photoCount']),
             'totalPhotos' => (int)$data['totalPhotos'],
             'totalUsers' => (int)$data['totalUsers']
         ];
@@ -162,6 +162,14 @@ class TagRepository
             // Delete source tag
             $deleteTagStmt = $this->pdo->prepare("DELETE FROM tags WHERE id = :id");
             $deleteTagStmt->execute([':id' => $fromTagId]);
+            
+            // Recount photoCount for destination tag
+            $recountStmt = $this->pdo->prepare(
+                "UPDATE tags SET photoCount = (
+                    SELECT COUNT(*) FROM post_tag WHERE tag_id = :tagId
+                ) WHERE id = :tagId2"
+            );
+            $recountStmt->execute([':tagId' => $toTagId, ':tagId2' => $toTagId]);
             
             $this->pdo->commit();
             return true;

@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entities;
 
 class Moderator extends User
 {
     public function getRole(): string
     {
-        return 'Moderator';
+        return 'Modérateur';
     }
 
-    // --- RESTRICTIONS ---
     public function canModerate(): bool
     {
         return true;

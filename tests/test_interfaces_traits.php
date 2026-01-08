@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../app/Entities/photo.php';
+require_once __DIR__ . '/../app/Entities/Photo.php';
 
 use App\Entities\Photo;
 

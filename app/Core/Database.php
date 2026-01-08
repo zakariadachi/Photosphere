@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 final class Database
 {
     private static ?PDO $connection = null;
-    
     private function __construct() {}
-    
     public static function getConnection(): PDO
     {
         if (self::$connection === null) {
@@ -21,9 +21,10 @@ final class Database
                     $config['options']
                 );
             } catch (PDOException $e) {
-                throw new PDOException($e->getMessage(), (int)$e->getCode());
+                throw new PDOException($e->getMessage());
             }
         }
+        
         return self::$connection;
     }
 }

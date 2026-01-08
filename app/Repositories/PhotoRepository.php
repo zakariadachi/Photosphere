@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 require_once __DIR__ . '/../Core/Database.php';
-require_once __DIR__ . '/../Entities/photo.php';
+require_once __DIR__ . '/../Entities/Photo.php';
 
 use App\Entities\Photo;
 use PDO;
@@ -123,10 +123,15 @@ class PhotoRepository
 
                     if ($existingTag) {
                         $tagId = $existingTag['id'];
+                        // Increment photoCount
+                        $this->pdo->prepare("UPDATE tags SET photoCount = photoCount + 1 WHERE id = ?")->execute([$tagId]);
                     } else {
-                        $sqlInsertTag = "INSERT INTO tags (name) VALUES (:name)";
+                        // Create tag with slug and photoCount = 1
+                        $sqlInsertTag = "INSERT INTO tags (name, slug, photoCount) VALUES (:name, :slug, 1)";
                         $stmtInsertTag = $this->pdo->prepare($sqlInsertTag);
+                        require_once __DIR__ . '/../Entities/Tag.php';
                         $stmtInsertTag->bindValue(':name', $tagName);
+                        $stmtInsertTag->bindValue(':slug', \App\Entities\Tag::normalizeSlug($tagName));
                         $stmtInsertTag->execute();
                         
                         $tagId = $this->pdo->lastInsertId();

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Entities;
 
 class Album {
@@ -11,7 +14,15 @@ class Album {
     private int $userId;
 
     // Constructeur
-    public function __construct($id, $name, $isPublic, $description, $photoCount, $updatedAt, $userId) {
+    public function __construct(
+        int $id, 
+        string $name, 
+        bool $isPublic, 
+        ?string $description, 
+        int $photoCount, 
+        ?string $updatedAt, 
+        int $userId
+    ) {
         $this->id = $id;
         $this->name = $name;
         $this->isPublic = $isPublic;
@@ -21,12 +32,33 @@ class Album {
         $this->userId = $userId;
     }
 
-    // --- Getters ---
-    public function getId() { return $this->id; }
-    public function getName() { return $this->name; }
-    public function isPublic() { return $this->isPublic; }
-    public function getDescription() { return $this->description; }
-    public function getPhotoCount() { return $this->photoCount; }
-    public function getUpdatedAt() { return $this->updatedAt; }
-    public function getUserId() { return $this->userId; }
+    // --- Getters
+    
+    public function getId(): int { 
+        return $this->id; 
+    }
+    
+    public function getName(): string { 
+        return $this->name; 
+    }
+    
+    public function isPublic(): bool { 
+        return $this->isPublic; 
+    }
+    
+    public function getDescription(): ?string { 
+        return $this->description; 
+    }
+    
+    public function getPhotoCount(): int { 
+        return $this->photoCount; 
+    }
+    
+    public function getUpdatedAt(): ?string { 
+        return $this->updatedAt; 
+    }
+    
+    public function getUserId(): int { 
+        return $this->userId; 
+    }
 }

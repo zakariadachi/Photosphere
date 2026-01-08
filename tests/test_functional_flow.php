@@ -9,7 +9,7 @@ require_once __DIR__ . '/../app/Repositories/CommentRepository.php';
 require_once __DIR__ . '/../app/Repositories/LikeRepository.php';
 require_once __DIR__ . '/../app/Entities/BasicUser.php';
 require_once __DIR__ . '/../app/Entities/Album.php';
-require_once __DIR__ . '/../app/Entities/photo.php';
+require_once __DIR__ . '/../app/Entities/Photo.php';
 
 use App\Repositories\UserRepository;
 use App\Repositories\AlbumRepository;

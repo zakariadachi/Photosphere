@@ -1,23 +1,24 @@
 <?php
+
 require_once __DIR__ . '/../app/Core/Database.php';
 
 try {
     $pdo = Database::getConnection();
-    echo "Connected to database.\n";
+    echo "Connexion à la base de données réussie.\n";
 
-    // check if column exists
     $checkSql = "SHOW COLUMNS FROM user LIKE 'status'";
     $stmt = $pdo->query($checkSql);
+    
     if ($stmt->fetch()) {
-        echo "Column 'status' already exists in 'user' table.\n";
+        echo "La colonne 'status' existe déjà dans la table 'user'.\n";
     } else {
-        echo "Adding 'status' column...\n";
+        echo "Ajout de la colonne 'status'...\n";
         $sql = "ALTER TABLE user ADD COLUMN status VARCHAR(50) DEFAULT 'active'";
         $pdo->exec($sql);
-        echo "Column 'status' added successfully.\n";
+        echo "Colonne 'status' ajoutée avec succès.\n";
     }
 
 } catch (PDOException $e) {
-    echo "Error: " . $e->getMessage() . "\n";
+    echo "Erreur lors de la migration : " . $e->getMessage() . "\n";
     exit(1);
 }

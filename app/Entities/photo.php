@@ -16,6 +16,7 @@ use App\Interfaces\Likeable;
 use App\Traits\TaggableTrait;
 use App\Traits\TimestampableTrait;
 
+
 class Photo implements Taggable, Commentable, Likeable {
     use TaggableTrait;
     use TimestampableTrait;
@@ -38,44 +39,38 @@ class Photo implements Taggable, Commentable, Likeable {
     private array $likedByUsers = [];
     private array $comments = [];
 
-
-    // Constructeur
     public function __construct(
         $id, $title, $description, $imageLink, 
         $imageSize, $dimensions, $status, $viewCount, 
         $publishedAt, $createdAt, $updatedAt, $userId, $albumId
     ) {
-        $this->id = $id;
+        $this->id = (int)$id;
         $this->title = $title;
         $this->description = $description;
         $this->imageLink = $imageLink;
-        $this->imageSize = $imageSize;
+        $this->imageSize = ($imageSize !== null) ? (int)$imageSize : null;
         $this->dimensions = $dimensions;
         $this->status = $status;
-        $this->viewCount = $viewCount;
+        $this->viewCount = (int)$viewCount;
         $this->publishedAt = $publishedAt;
-        
-        // Initialize timestamps
         $this->setCreatedAt($createdAt);
         $this->setUpdatedAt($updatedAt);
         
-        $this->userId = $userId;
-        $this->albumId = $albumId;
+        $this->userId = (int)$userId;
+        $this->albumId = ($albumId !== null) ? (int)$albumId : null;
     }
 
-    // --- Getters de base
-    public function getId() { return $this->id; }
-    public function getTitle() { return $this->title; }
-    public function getDescription() { return $this->description; }
-    public function getImageLink() { return $this->imageLink; }
-    public function getStatus() { return $this->status; }
-    public function getViewCount() { return $this->viewCount; }
-    public function getPublishedAt() { return $this->publishedAt; }
-    public function getUserId() { return $this->userId; }
-    public function getAlbumId() { return $this->albumId; }
-
-
-    // --- IMPLEMENTATION COMMENTABLE ---
+    // --- Getters
+    
+    public function getId(): int { return $this->id; }
+    public function getTitle(): ?string { return $this->title; }
+    public function getDescription(): ?string { return $this->description; }
+    public function getImageLink(): string { return $this->imageLink; }
+    public function getStatus(): ?string { return $this->status; }
+    public function getViewCount(): int { return $this->viewCount; }
+    public function getPublishedAt(): ?string { return $this->publishedAt; }
+    public function getUserId(): int { return $this->userId; }
+    public function getAlbumId(): ?int { return $this->albumId; }
 
     public function addComment(string $content, int $userId): int
     {
@@ -112,8 +107,6 @@ class Photo implements Taggable, Commentable, Likeable {
         return $this->commentCount;
     }
 
-    // IMPLEMENTATION LIKEABLE 
-
     public function addLike(int $userId): bool
     {
         if ($this->isLikedBy($userId) == true) {
@@ -124,7 +117,6 @@ class Photo implements Taggable, Commentable, Likeable {
             return true;
         }
     }
-
 
     public function isLikedBy(int $userId): bool
     {
@@ -148,8 +140,9 @@ class Photo implements Taggable, Commentable, Likeable {
             $this->likedByUsers = array_values($this->likedByUsers);
             $this->likeCount = $this->likeCount - 1;
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     public function getLikedBy(): array

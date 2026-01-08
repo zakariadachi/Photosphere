@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../app/Services/UserFactory.php';
 require_once __DIR__ . '/../app/Entities/Album.php';
-require_once __DIR__ . '/../app/Entities/photo.php';
+require_once __DIR__ . '/../app/Entities/Photo.php';
 require_once __DIR__ . '/../app/Entities/Comment.php';
 require_once __DIR__ . '/../app/Entities/Like.php';
 require_once __DIR__ . '/../app/Entities/Tag.php';
@@ -16,7 +16,7 @@ use App\Entities\Tag;
 
 echo "=== TEST D'INSTANCIATION DES ENTITÉS ===\n\n";
 
-// 1. User via Factory
+// User via Factory
 $user = UserFactory::create([
     'id' => 1,
     'user_name' => 'test_user',
@@ -26,22 +26,22 @@ $user = UserFactory::create([
 ]);
 echo "✅ User crée : " . get_class($user) . " (Role: " . $user->getRoleProp() . ")\n";
 
-// 2. Album
+// Album
 $album = new Album(1, 'Vacances', true, 'Description album', 0, null, 1);
 echo "✅ Album crée : " . $album->getName() . "\n";
 
-// 3. Photo
+// Photo
 $photo = new Photo(1, 'Titre', 'Desc', 'img.jpg', 100, '800x600', 'published', 0, null, date('Y-m-d'), null, 1, 1);
 echo "✅ Photo crée : " . $photo->getTitle() . "\n";
 
-// 4. Comment
+// Comment
 $comment = new Comment(1, 'Super !', 1, 1, false, date('Y-m-d H:i:s'));
 echo "✅ Comment crée : " . $comment->getContent() . "\n";
 
-// 5. Like
+// Like
 $like = new Like(1, 1, date('Y-m-d H:i:s'));
 echo "✅ Like crée\n";
 
-// 6. Tag
+// Tag
 $tag = new Tag(1, 'voyage');
 echo "✅ Tag crée : " . $tag->getName() . "\n";

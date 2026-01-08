@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+
 require_once __DIR__ . '/../Entities/User.php';
 require_once __DIR__ . '/../Entities/BasicUser.php';
 require_once __DIR__ . '/../Entities/ProUser.php';
@@ -15,7 +16,7 @@ use App\Entities\Administrator;
 
 class UserFactory
 {
-    //créer l'objet
+
     public static function create($data)
     {
         if (isset($data['id'])) {
@@ -32,8 +33,17 @@ class UserFactory
             $userName = '';
         }
 
-        $email = isset($data['email']) ? $data['email'] : '';
-        $password = isset($data['password']) ? $data['password'] : '';
+        if (isset($data['email'])) {
+            $email = $data['email'];
+        } else {
+            $email = '';
+        }
+
+        if (isset($data['password'])) {
+            $password = $data['password'];
+        } else {
+            $password = '';
+        }
 
         if (isset($data['role'])) {
             $role = $data['role'];
@@ -43,7 +53,6 @@ class UserFactory
             $role = 'basicuser';
         }
 
-        // Gestion des valeurs
         if (isset($data['created_at'])) {
             $createdAt = $data['created_at'];
         } else {
@@ -97,6 +106,7 @@ class UserFactory
         } else {
             $isSuperAdmin = null;
         }
+
         if (isset($data['status'])) {
             $status = $data['status'];
         } else {

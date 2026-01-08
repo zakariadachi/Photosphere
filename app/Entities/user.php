@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entities;
 
 abstract class User
@@ -56,7 +58,7 @@ abstract class User
         $this->uploadCount = $uploadCount;
     }
 
-    // --- GETTERS
+    // --- GETTERS (Accesseurs) ---
 
     public function getId(): int 
     { 
@@ -123,11 +125,6 @@ abstract class User
         return $this->status;
     }
 
-    public function setStatus(string $status): void
-    {
-        $this->status = $status;
-    }
-
     public function isSuperAdmin(): bool
     {
         if ($this->isSuperAdmin == true) {
@@ -184,7 +181,12 @@ abstract class User
         $this->uploadCount = $count; 
     }
 
-    // --- METHODES PAR DEFAUT ---
+    public function setStatus(string $status): void
+    {
+        $this->status = $status;
+    }
+
+    // --- METHODES PAR DEFAUT ET ABSTRAITES ---
 
     abstract public function getRole(): string;
 
